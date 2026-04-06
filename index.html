@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electropy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f1ea;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff7b00;
+        }
+        .logo img {
+            max-height: 40px;
+            width: auto;
+            display: block;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+        .menu-toggle .hamburger {
+            display: inline-block;
+            width: 24px;
+            height: 2px;
+            background-color: #333;
+            position: relative;
+        }
+        .menu-toggle .hamburger::before,
+        .menu-toggle .hamburger::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 2px;
+            background-color: #333;
+        }
+        .menu-toggle .hamburger::before {
+            top: -7px;
+        }
+        .menu-toggle .hamburger::after {
+            top: 7px;
+        }
+        .menu-toggle {
+            position: relative;
+        }
+        .menu-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-popup {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 160px;
+            z-index: 1000;
+        }
+        .menu-popup.active {
+            display: block;
+        }
+        .menu-popup ul {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+            display: block;
+        }
+        .menu-popup li {
+            margin: 0;
+            padding: 0;
+        }
+        .menu-popup a {
+            display: block;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.35;
+        }
+        .menu-popup a:hover {
+            background: #f9f9f9;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 750px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            color: #ff7b00;
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .footer-popup-link {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 600;
+        }
+        .modal-body {
+            margin-top: 22px;
+            color: #333;
+            line-height: 1.7;
+        }
+        .modal-body p {
+            margin: 0 0 14px;
+        }
+        .modal-body ul {
+            margin: 0 0 18px 0;
+        }
+        .modal-body li {
+            padding-left: 0;
+        }
+        .modal-body strong {
+            display: block;
+            margin: 18px 0 8px;
+            color: #222;
+        }
+        section {
+            padding: 60px 50px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .hero {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+        .hero h1 {
+            color: #ff7b00;
+            margin-bottom: 10px;
+        }
+        .hero h2 {
+            color: #666;
+        }
+        .hero-cards {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .card-light {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            flex: 1;
+            border: 1px solid #ddd;
+        }
+        .card-green {
+            background-color: #7bc143;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            flex: 1;
+        }
+        .themes {
+            margin-top: 50px;
+        }
+        .themes h2 {
+            text-align: center;
+            color: #ff7b00;
+        }
+        .theme-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .theme-item {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .btn-demo {
+            display: block;
+            width: max-content;
+            margin: 40px auto;
+            padding: 15px 30px;
+            background-color: #ff7b00;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+        .team {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+        }
+        .team-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+        .team-member {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e1e1e1;
+        }
+        .team-member .avatar {
+            width: 80px;
+            height: 80px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+        /* Hidden citation class to keep the page visually clean */
+        .hidden-cite {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo"><img src="Official Logo - Lateral.png" alt="ELECTROPY AI"><span class="hidden-cite">[cite: 2]</span></div>
+            <nav>
+                <ul>
+                    <li><a href="mailto:info@electropy.ai">CONTACT US<span class="hidden-cite">[cite: 3]</span></a></li>
+                    <li class="menu-toggle">
+                        <button class="menu-button" aria-label="Open menu"><span class="hamburger"></span></button>
+                        <div class="menu-popup">
+                            <ul>
+                                <li><a href="#themes">What we offer?</a></li>
+                                <li><a href="#team">Who we are?</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>ENERGY TRANSITION IS BECOMING CHAOTIC<span class="hidden-cite">[cite: 7]</span></h1>
+        <h2>NEEDS AN UPGRADED APPROACH<span class="hidden-cite">[cite: 8]</span></h2>
+        
+        <div class="hero-cards">
+            <div class="card-light">
+                <p>The ongoing energy transition is presenting new challenges amidst an evolving supply-demand mix and growing penetration of renewables.<span class="hidden-cite">[cite: 9]</span> These emerging risks on power sector investments now call for new capabilities.<span class="hidden-cite">[cite: 10]</span></p>
+            </div>
+            <div class="card-green">
+                <p>To 'bring order to this chaotic transition' it is important to use data-driven decisions backed by modern AI/ML techniques and risk management.<span class="hidden-cite">[cite: 11]</span></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="themes" class="themes">
+        <h2>TARGETING<span class="hidden-cite">[cite: 12]</span> KEY THEMES<span class="hidden-cite">[cite: 13]</span> IN THE SECTOR<span class="hidden-cite">[cite: 14]</span></h2>
+        
+        <div class="theme-grid">
+            <div class="theme-item">
+                <p>As renewable penetration increases in the grid, the need for Route-to-market evaluation becomes critical for utilities, C&I players, and IPPS.<span class="hidden-cite">[cite: 15]</span></p>
+                <ul>
+                    <li>The FID decision with long-term view needs to be integrated with the portfolio optimization in the short-term plan.<span class="hidden-cite">[cite: 16]</span></li>
+                    <li>The decision making is becoming more complex, with variables and multiple scenarios on both demand and supply side.<span class="hidden-cite">[cite: 17]</span></li>
+                </ul>
+            </div>
+            <div class="theme-item">
+                <p>Forecasting of key variables and overall market modelling is becoming a must have capability.<span class="hidden-cite">[cite: 20]</span></p>
+                <ul>
+                    <li>Need for a hybrid of deterministic and stochastic analysis, with specific ability to accurately forecast outlier events.<span class="hidden-cite">[cite: 22]</span></li>
+                    <li>Requirement for an embedded capability for algorithm-based decision making, for both buyers and sellers of electricity.<span class="hidden-cite">[cite: 23]</span></li>
+                </ul>
+            </div>
+            <div class="theme-item">
+                <p>Developers/IPPs and Utilities need to enhance portfolio capabilities, to support decision making across Long-term, medium-term and short-term horizons.<span class="hidden-cite">[cite: 24]</span></p>
+                <ul>
+                    <li>Pricing and managing complex portfolios like FDRE, merchant exposure, VPPA contracts, all with exposure to multiple technologies.<span class="hidden-cite">[cite: 25]</span></li>
+                    <li>Creating portfolio hedges on a continuous basis with increasing shape, volume and imbalance risks in the portfolio.<span class="hidden-cite">[cite: 27]</span></li>
+                </ul>
+            </div>
+            <div class="theme-item">
+                <p>All new investments are now exposed to market and system volatility. No stakeholder in the value chain is immune to these risks.<span class="hidden-cite">[cite: 30]</span></p>
+                <ul>
+                    <li>All portfolios, both existing and under planning, need continuous monitoring for Value-at-risk.<span class="hidden-cite">[cite: 31]</span></li>
+                    <li>Ensure that all new investment or procurement decisions are based on rigorous data analysis and considering all sensitivities.<span class="hidden-cite">[cite: 32]</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <a href="#" class="btn-demo">REQUEST<span class="hidden-cite">[cite: 28]</span> DEMO<span class="hidden-cite">[cite: 29]</span></a>
+    </section>
+
+    <section id="team" class="team">
+        <h2>OUR TEAM<span class="hidden-cite">[cite: 33]</span></h2>
+        <p>A desired blend of subject matter expertise + AI Technology applications to solve the evolving power sector challenges.<span class="hidden-cite">[cite: 34]</span></p>
+        
+        <div class="team-stats">
+            <div>
+                <strong>Expertise Background:</strong>
+                <ul>
+                    <li>Leading power sector IPPs<span class="hidden-cite">[cite: 36]</span></li>
+                    <li>Renewables & conventional technologies<span class="hidden-cite">[cite: 37]</span></li>
+                    <li>Global power market advisory firms<span class="hidden-cite">[cite: 38]</span></li>
+                    <li>Commercial due diligence on new investments in sector<span class="hidden-cite">[cite: 39]</span></li>
+                    <li>AI/ML enabled technology firms<span class="hidden-cite">[cite: 40]</span></li>
+                    <li>Data analytics & insights with numerous patents<span class="hidden-cite">[cite: 41]</span></li>
+                </ul>
+            </div>
+            <div>
+                <strong>Global Presence:</strong> India, Singapore, US, Europe<span class="hidden-cite">[cite: 42]</span><br><br>
+                <strong>Experience:</strong> 50+<span class="hidden-cite">[cite: 43]</span> years of experience<span class="hidden-cite">[cite: 44]</span><br><br>
+                <strong>Top educational background:<span class="hidden-cite">[cite: 48]</span></strong> IIT<span class="hidden-cite">[cite: 45]</span>, ISB<span class="hidden-cite">[cite: 45]</span>, IIM<span class="hidden-cite">[cite: 46]</span>, Johns Hopkins<span class="hidden-cite">[cite: 47]</span>
+            </div>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="avatar"></div>
+                <h3>CO-FOUNDER AND CEO (REDACTED)<span class="hidden-cite">[cite: 49]</span></h3>
+                <p>Former position at (REDACTED)<span class="hidden-cite">[cite: 49]</span></p>
+            </div>
+            <div class="team-member">
+                <div class="avatar"></div>
+                <h3>CO-FOUNDER AND COO (REDACTED)<span class="hidden-cite">[cite: 51]</span></h3>
+                <p>Former position at (REDACTED)<span class="hidden-cite">[cite: 52]</span></p>
+            </div>
+            <div class="team-member">
+                <div class="avatar"></div>
+                <h3>CO-FOUNDER AND CTO (REDACTED)<span class="hidden-cite">[cite: 53]</span></h3>
+                <p>Former position at (REDACTED)<span class="hidden-cite">[cite: 53]</span></p>
+            </div>
+        </div>
+        <br><br>
+        <p>We are actively looking for motivated professionals interested in smoothening the Energy Transition with AI & Deep Tech.<span class="hidden-cite">[cite: 54]</span></p>
+        <p>Drop us a line if you have similar ambitions.<span class="hidden-cite">[cite: 55]</span></p>
+    </section>
+
+    <footer id="contact">
+        <p><a href="#" id="footer-popup-link" class="footer-popup-link">&copy; 2026 Electropy&trade;<span class="hidden-cite">[cite: 59]</span></a></p>
+    </footer>
+
+    <div class="modal-overlay" id="footer-modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="footer-modal-title">
+            <button type="button" class="modal-close" id="footer-modal-close" aria-label="Close popup">×</button>
+            <h3 id="footer-modal-title">IMPRINT</h3>
+            <div class="modal-body">
+                <h3>Electropy-AI Private Limited</h3>
+                <ul>
+                    <li>Address: 400A, 12 Ajit Singh House, Yusuf Sarai Commercial Complex, New Delhi - 110016</li>
+                    <li>Email: <a href="mailto:info@electropy.ai">info@electropy.ai</a></li>
+                    <li>Phone: +91 996 0045 995</li>
+                    <li>Website: <a href="http://electropy.ai" target="_blank" rel="noopener noreferrer">http://electropy.ai</a></li>
+                </ul>
+                <strong>Registration & Regulatory Information</strong>
+                <ul>
+                    <li>Registered Address: H-103, Freedom Park Life, Sector 57, Gurugram - 122003</li>
+                    <li>Corporate Identity Number (CIN): U62099HR2026PTC142127</li>
+                    <li>Registrar of Companies: ROC Delhi & Haryana</li>
+                    <li>GST Number: 07AAJCE5205D1Z0</li>
+                    <li>MSME/Udyam Registration Number: UDYAM-HR-05-0182991</li>
+                    <li>Company Representative: Vatsal Agarwal</li>
+                </ul>
+                <strong>Disclaimer & Content Responsibility</strong>
+                <p>The content on this website is for informational purposes only. We make every effort to ensure the accuracy of the information; however, Electropy-AI Private Limited assumes no liability for errors or omissions. Links to external sites are not under our control, and we are not responsible for their content.</p>
+                <strong>Copyright & Trademark</strong>
+                <p>© 2026 Electropy-AI Private Limited. All rights reserved. Electropy™ is trademark of Electropy-AI Private Limited. Reproduction of any part of this website without written permission is prohibited.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const menuButton = document.querySelector('.menu-button');
+        const menuPopup = document.querySelector('.menu-popup');
+
+        menuButton.addEventListener('click', () => {
+            menuPopup.classList.toggle('active');
+        });
+
+        // Close popup when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuButton.contains(event.target) && !menuPopup.contains(event.target)) {
+                menuPopup.classList.remove('active');
+            }
+        });
+
+        // Close popup when a link is clicked
+        menuPopup.addEventListener('click', (event) => {
+            if (event.target.tagName === 'A') {
+                menuPopup.classList.remove('active');
+            }
+        });
+
+        const footerLink = document.getElementById('footer-popup-link');
+        const footerModal = document.getElementById('footer-modal');
+        const footerModalClose = document.getElementById('footer-modal-close');
+
+        function openFooterModal(event) {
+            event.preventDefault();
+            footerModal.classList.add('active');
+            footerModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeFooterModal() {
+            footerModal.classList.remove('active');
+            footerModal.setAttribute('aria-hidden', 'true');
+        }
+
+        footerLink.addEventListener('click', openFooterModal);
+        footerModalClose.addEventListener('click', closeFooterModal);
+        footerModal.addEventListener('click', (event) => {
+            if (event.target === footerModal) {
+                closeFooterModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
